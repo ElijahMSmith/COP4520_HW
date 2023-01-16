@@ -1,0 +1,2 @@
+- Try javac to a build folder and run command from that folder
+- Make a bash script ala Szum to run it

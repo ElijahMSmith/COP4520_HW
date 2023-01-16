@@ -8,18 +8,21 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-        long startTime = System.currentTimeMillis();
         Counter counter = new Counter();
 
         ExecutorService es = Executors.newCachedThreadPool();
         for (int i = 0; i < 8; i++)
             es.execute(new Worker(counter));
 
+        long startTime = System.currentTimeMillis();
+
         es.shutdown();
         es.awaitTermination(1, TimeUnit.MINUTES);
 
+        long endTime = System.currentTimeMillis();
+        
         System.setOut(new PrintStream(new File("primes.txt")));
-        counter.printResults(System.currentTimeMillis() - startTime);
+        counter.printResults(endTime - startTime);
     }
 
 }

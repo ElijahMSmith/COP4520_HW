@@ -15,11 +15,22 @@ public class Worker implements Runnable {
         }
     }
 
+    // Based on: https://en.wikipedia.org/wiki/Primality_test
+    // Check number for divisibility by 2, 3, and all 6k +/- 1
     private boolean checkIsPrime(int val) {
-        int sqrt = (int) Math.sqrt(val);
-        for (int i = 2; i <= sqrt; i++)
-            if (val % i == 0)
+        if (val <= 3)
+            return val > 1;
+
+        if (val % 2 == 0 || val % 3 == 0)
+            return false;
+
+        int cap = ((int) Math.sqrt(val)) + 1;
+
+        for (int i = 5; i < cap; i += 6) {
+            if (val % i == 0 || val % (i + 2) == 0)
                 return false;
+        }
+
         return true;
     }
 }
