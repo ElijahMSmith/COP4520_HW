@@ -3,7 +3,7 @@ import java.util.ListIterator;
 
 public class Counter {
 
-    public static final int MAX = 100000000;
+    public static final int MAX = 1000000;
 
     private int count = 2;
     private int primesFound = 0;
