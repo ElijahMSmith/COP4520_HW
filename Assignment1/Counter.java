@@ -3,8 +3,7 @@ import java.util.ListIterator;
 
 public class Counter {
 
-    public static final int MAX = 1000000;
-
+    public static final int MAX = 100000000;
     private int count = 2;
     private int primesFound = 0;
     private long sumPrimes = 0;
@@ -22,38 +21,40 @@ public class Counter {
 
     // Add a newly-found prime to the top 10 and increment sums
     // Synchronized so lastTenDescending list is modified safely
-    public synchronized void notePrime(int newPrime) {
+    public void notePrime(int newPrime) {
         primesFound++;
         sumPrimes += newPrime;
 
-        ListIterator<Integer> it = lastTenDescending.listIterator();
-        boolean inserted = false;
-        while (it.hasNext()) {
-            int nextPrime = it.next();
-            // Find the placement in the descending list
-            if (newPrime > nextPrime) {
-                // Insert it in front of the current element since it's greater
-                if (it.hasPrevious()) {
-                    // Not the first element in the list, .previous() works
-                    it.previous();
-                    it.add(newPrime);
-                } else {
-                    // First element in list, .previous() would error
-                    lastTenDescending.addFirst(newPrime);
+        synchronized (lastTenDescending) {
+            ListIterator<Integer> it = lastTenDescending.listIterator();
+            boolean inserted = false;
+            while (it.hasNext()) {
+                int nextPrime = it.next();
+                // Find the placement in the descending list
+                if (newPrime > nextPrime) {
+                    // Insert it in front of the current element since it's greater
+                    if (it.hasPrevious()) {
+                        // Not the first element in the list, .previous() works
+                        it.previous();
+                        it.add(newPrime);
+                    } else {
+                        // First element in list, .previous() would error
+                        lastTenDescending.addFirst(newPrime);
+                    }
+
+                    inserted = true;
+                    break;
                 }
-
-                inserted = true;
-                break;
             }
+
+            // If we made it through the list, it's the smallest and fits on the end
+            if (!inserted)
+                lastTenDescending.addLast(newPrime);
+
+            // Keep it no more than 10 elements
+            if (lastTenDescending.size() > 10)
+                lastTenDescending.removeLast();
         }
-
-        // If we made it through the list, it's the smallest and fits on the end
-        if (!inserted)
-            lastTenDescending.addLast(newPrime);
-
-        // Keep it no more than 10 elements
-        if (lastTenDescending.size() > 10)
-            lastTenDescending.removeLast();
     }
 
     public void printResults(long executionTime) {
