@@ -30,7 +30,7 @@ public class BirthdayParty {
 
         while (!FINISHED) {
             int random = (int) (Math.random() * NUM_GUESTS);
-            //System.out.printf("%d\n", random);
+            // System.out.printf("%d\n", random);
             GuestThread thisGuest = allGuests[random];
             synchronized (thisGuest) {
                 thisGuest.notify();
@@ -38,9 +38,13 @@ public class BirthdayParty {
         }
 
         System.out.println("--------------------------\nGuests now know everyone has entered the labyrinth!");
-        for (int i = 0; i < NUM_GUESTS; i++)
-            System.out.println("Guest " + i + " entered " + allGuests[i].getTimesEntered() + " times");
+        double sum = 0;
 
+        for (int i = 0; i < NUM_GUESTS; i++) {
+            sum += allGuests[i].getTimesEntered();
+            System.out.println("Guest " + i + " entered " + allGuests[i].getTimesEntered() + " times");
+        }
+        System.out.println("Average number of times entered per guest: " + (sum / NUM_GUESTS));
         System.exit(0);
     }
 }
