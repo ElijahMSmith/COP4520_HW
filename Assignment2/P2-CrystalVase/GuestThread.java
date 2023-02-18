@@ -5,9 +5,9 @@ public class GuestThread extends Thread {
     private static int ID_COUNTER = 0;
     private int id = 0;
 
-    private final int DELAY_TO_QUEUE = 10;
-    private final int MAX_TIME_IN = 15;
-    private final double RUN_AGAIN_THRESHOLD = .10;
+    private final int DELAY_TO_QUEUE = 15;
+    private final int MAX_TIME_IN = 30;
+    private final double RUN_AGAIN_THRESHOLD = .5;
 
     private int timesVisited = 0;
     private boolean runAgain = true;
