@@ -9,9 +9,10 @@ public class SpecialGuestThread extends GuestThread {
         return totalEntrants;
     }
 
-    public void countNewEntrant() {
+    public void countNewEntrant(int id) {
         totalEntrants++;
-        System.out.printf("Special Guest has now noticed %d unique guests enter\n", totalEntrants);
+        // System.out.printf("Special Guest has now noticed %d unique guests enter\n",
+        // totalEntrants);
         if (totalEntrants == BirthdayParty.NUM_GUESTS)
             BirthdayParty.FINISHED = true;
     }

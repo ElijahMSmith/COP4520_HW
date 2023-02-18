@@ -14,9 +14,8 @@ public class BirthdayParty {
                 if (NUM_GUESTS > 1)
                     break;
             } catch (Exception e) {
+                System.out.println("Please provide a valid number of guests (>= 1).");
             }
-
-            System.out.println("Please provide a valid number of guests (>= 1).");
         }
         sc.close();
 
@@ -31,7 +30,7 @@ public class BirthdayParty {
 
         while (!FINISHED) {
             int random = (int) (Math.random() * NUM_GUESTS);
-            System.out.printf("%d\n", random);
+            //System.out.printf("%d\n", random);
             GuestThread thisGuest = allGuests[random];
             synchronized (thisGuest) {
                 thisGuest.notify();
