@@ -34,9 +34,10 @@ public class Main {
         }
         for (int i = 0; i < NUM_PRESENTS * 4; i++) {
             int rand = (int) (Math.random() * NUM_PRESENTS);
-            int temp = tags[i];
-            tags[i] = tags[rand];
-            tags[rand] = temp;
+            int rand2 = (int) (Math.random() * NUM_PRESENTS);
+            int temp = tags[rand];
+            tags[rand] = tags[rand2];
+            tags[rand2] = temp;
         }
 
         PresentChain chain = new PresentChain();
@@ -50,7 +51,7 @@ public class Main {
         ExecutorService es = Executors.newCachedThreadPool();
         ServantThread[] servants = new ServantThread[NUM_SERVANTS];
         for (int i = 0; i < NUM_SERVANTS; i++) {
-            servants[i] = new ServantThread(presentBag, chain, i);
+            servants[i] = new ServantThread(presentBag, chain);
             es.execute(servants[i]);
         }
 
@@ -63,11 +64,23 @@ public class Main {
         else
             System.out.println("Present bag depleted and all thank-you notes written!");
 
-        System.out.printf("\nExecution time: %d\n\n", (end - start));
+        System.out.printf("\nExecution time: %dms\n\n", (end - start));
         System.out.println("Servant actions report:");
         System.out.println("===========================================");
-        System.out.println("ID\t\tPresents Added\tPresents Removed\tSearches Made\t");
-        for (int i = 0; i < NUM_SERVANTS; i++)
-            System.out.println(servants[i].getActionsReport());
+        System.out.println("ID\tAdds\tRemoves\tSearches\t");
+
+        int totalAdds = 0, totalRemoves = 0, totalSearches = 0;
+        for (int i = 0; i < NUM_SERVANTS; i++) {
+            int[] actions = servants[i].getActionsReport();
+            System.out.printf("%d\t%d\t%d\t%d\n", i, actions[0], actions[1], actions[2]);
+            totalAdds += actions[0];
+            totalRemoves += actions[1];
+            totalSearches += actions[2];
+        }
+
+        System.out.printf("Total\t%d\t%d\t%d\n\n", totalAdds, totalRemoves, totalSearches);
+
+        boolean correct = chain.allPresentsAddedRemovedOnce();
+        System.out.println("All presents added/removed correctly: " + correct);
     }
 }

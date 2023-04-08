@@ -1,7 +1,18 @@
 package src;
 
 public class PresentChain {
-    private Present head = new Present(0);
+    private Present head;
+
+    private final int MIN_SENT = 0;
+    private final int MAX_SENT = 500001;
+
+    private int[] addLog = new int[500001];
+    private int[] removeLog = new int[500001];
+
+    public PresentChain() {
+        head = new Present(MIN_SENT);
+        head.next = new Present(MAX_SENT);
+    }
 
     /*
      * Inserts a present into the chain at the correct numerical location
@@ -25,6 +36,7 @@ public class PresentChain {
                         else {
                             newPresent.next = curr;
                             prev.next = newPresent;
+                            addLog[newPresent.tag]++;
                             return true;
                         }
                     }
@@ -42,8 +54,9 @@ public class PresentChain {
         while (true) {
             Present prev = head;
             Present curr = head.next;
+
             // If no present on list, let worker move on to the next task
-            if (curr == null)
+            if (curr.tag == MAX_SENT)
                 return false;
 
             synchronized (prev) {
@@ -53,6 +66,7 @@ public class PresentChain {
                         // Remove safely
                         curr.marked = true;
                         prev.next = curr.next;
+                        removeLog[curr.tag]++;
                         return true;
                     }
                 }
@@ -75,5 +89,18 @@ public class PresentChain {
      */
     private boolean validatePresent(Present prev, Present curr) {
         return !prev.marked && !curr.marked && prev.next == curr;
+    }
+
+    public boolean allPresentsAddedRemovedOnce() {
+        for (int i = 1; i < 500001; i++) {
+            if (addLog[i] != 1) {
+                System.out.println("Present " + i + " added to chain " + addLog[i] + " times!");
+                return false;
+            } else if (removeLog[i] != 1) {
+                System.out.println("Present " + i + " removed from chain " + removeLog[i] + " times!");
+                return false;
+            }
+        }
+        return true;
     }
 }

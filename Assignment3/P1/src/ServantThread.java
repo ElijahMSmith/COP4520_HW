@@ -6,18 +6,21 @@ public class ServantThread extends Thread {
 
     private LinkedList<Integer> presentBag;
     private PresentChain chain;
-    private int id;
 
     private int presentsAdded = 0;
     private int notesWritten = 0;
     private int searchesMade = 0;
 
-    public ServantThread(LinkedList<Integer> presentBag, PresentChain chain, int id) {
+    public ServantThread(LinkedList<Integer> presentBag, PresentChain chain) {
         this.presentBag = presentBag;
         this.chain = chain;
-        this.id = id;
     }
 
+    /*
+     * Grabs the next random present from the bag
+     * Returns true if the present was successfully added to the chain
+     * Returns false if bag is empty and no more presents can be added
+     */
     private boolean addPresentToChain() {
         Present nextPresent;
         synchronized (presentBag) {
@@ -28,10 +31,17 @@ public class ServantThread extends Thread {
         return chain.insertPresent(nextPresent);
     }
 
+    /*
+     * Returns true if a present was removed
+     * Returns false if the chain is empty and there are no presents to remove
+     */
     private boolean writeThankYou() {
         return chain.removeFirstPresent();
     }
 
+    /*
+     * Picks a random tag and checks if the present is currently in the chain
+     */
     private boolean searchForRandomPresent() {
         searchesMade++;
         int tag = (int) (Math.random() * 500000 + 1);
@@ -53,7 +63,7 @@ public class ServantThread extends Thread {
                 searchForRandomPresent();
 
             // Add to chain
-            bagEmpty = addPresentToChain();
+            bagEmpty = !addPresentToChain();
             if (!bagEmpty)
                 presentsAdded++;
 
@@ -62,7 +72,7 @@ public class ServantThread extends Thread {
                 searchForRandomPresent();
 
             // Write thank you
-            chainEmpty = writeThankYou();
+            chainEmpty = !writeThankYou();
             if (!chainEmpty)
                 notesWritten++;
 
@@ -72,7 +82,7 @@ public class ServantThread extends Thread {
         }
     }
 
-    public String getActionsReport() {
-        return String.format("%d\t\t%d\t%d\t%d", id, presentsAdded, notesWritten, searchesMade);
+    public int[] getActionsReport() {
+        return new int[] { presentsAdded, notesWritten, searchesMade };
     }
 }
