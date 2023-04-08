@@ -1,9 +1,9 @@
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import src.ServantThread;
+import src.SensorThread;
+import src.TempList;
 
 public class Main {
 
@@ -17,24 +17,56 @@ public class Main {
      * - Use 8 threads, one for each temp sensor
      */
 
-    /*
-     * x60:
-     * - Run 8 threads to generate temp (-100F to 70F) and log to matrix
-     * - Coarse-lock top 5 highest list and check if we should bump something off
-     * - Coast-lock top 5 lowest list and do same
-     * 
-     * Print top 5 lists
-     * Run through matrices and check each sensor at each minute
-     * - Get temp 10m ahead and get difference (abs value)
-     * - Print max of these
-     */
-
     public static void main(String[] args) throws InterruptedException {
         int NUM_THREADS = 8;
-        int[][] log = new int[8][60];
+        int[][] log = new int[NUM_THREADS][60];
+        TempList hottest = new TempList(true);
+        TempList coldest = new TempList(false);
 
-        ExecutorService
-            for(int i = 0; i < )
-        
+        ExecutorService es = Executors.newCachedThreadPool();
+        for (int i = 0; i < NUM_THREADS; i++) {
+            es.execute(new SensorThread(log, hottest, coldest));
+        }
+
+        es.shutdown();
+        boolean success = es.awaitTermination(1, TimeUnit.MINUTES);
+
+        if (success)
+            System.out.println("Simulation ended successfully!");
+        else
+            System.out.println("Simulation failed to end before 1m timeout.");
+
+        System.out.println("\n============ Full Log ============");
+        System.out.println("\tT1\tT2\tT3\tT4\tT5\tT6\tT7\tT8\n");
+        for (int j = 0; j < 60; j++) {
+            System.out.print("M" + j + "\t");
+            for (int i = 0; i < NUM_THREADS; i++)
+                System.out.print(log[i][j] + "\t");
+            System.out.println();
+        }
+
+        // System.out.println("\nTop 5 hottest temperatures: " + hottest + "\n");
+        // System.out.println("\nTop 5 coldest temperatures: " + coldest + "\n");
+
+        int maxDiff = -1;
+        int maxID = -1;
+        int maxStartMin = -1;
+
+        for (int tID = 0; tID < NUM_THREADS; tID++) {
+            for (int min = 0; min < 50; min++) {
+                int diff = Math.abs(log[tID][min] - log[tID][min + 10]);
+                if (diff > maxDiff) {
+                    maxDiff = diff;
+                    maxID = tID;
+                    maxStartMin = min;
+                }
+            }
+        }
+
+        int sTemp = log[maxID][maxStartMin];
+        int fTemp = log[maxID][maxStartMin + 10];
+        System.out.printf(
+                "\nMax temperature difference was recorded by sensor %d:\n%dF at minute %d -> %dF at minute %d (total %ddeg)\n",
+                maxID, sTemp, maxStartMin, fTemp, maxStartMin + 10, fTemp - sTemp);
     }
 }
