@@ -11,7 +11,8 @@ public class TempList {
         this.hottest = hottest;
     }
 
-    // TODO: This doesn't work
+    // TODO: This doesn't work - run tests separately to see how this logic works
+    // for individual insertions from one thread
     public synchronized void offerTemp(int reading) {
         TempNode prev = head;
         TempNode curr = head.next;
@@ -50,9 +51,10 @@ public class TempList {
         TempNode curr = head.next;
         StringBuilder build = new StringBuilder();
         while (curr != null) {
-            build.append(curr.val + ", ");
+            build.append(curr.val + " ");
             curr = curr.next;
         }
-        return build.substring(build.length() - 2).toString();
+        // return build.substring(build.length() - 2).toString();
+        return build.toString();
     }
 }

@@ -45,8 +45,8 @@ public class Main {
             System.out.println();
         }
 
-        // System.out.println("\nTop 5 hottest temperatures: " + hottest + "\n");
-        // System.out.println("\nTop 5 coldest temperatures: " + coldest + "\n");
+        System.out.println("\nTop 5 hottest temperatures: " + hottest);
+        System.out.println("\nTop 5 coldest temperatures: " + coldest);
 
         int maxDiff = -1;
         int maxID = -1;
