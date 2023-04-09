@@ -4,4 +4,7 @@ To run this program, either use the run script if on Linux or MacOS:
 
 Or compile and run directly:
 
-TODO
+```
+javac Main.java src/SensorThread.java src/TempList.java
+java Main
+```

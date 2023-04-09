@@ -6,7 +6,7 @@ public class SensorThread extends Thread {
     TempList coldest;
 
     public final int ID;
-    private static int ID_COUNTER = 0;
+    private static int ID_COUNTER = 1;
 
     public SensorThread(int[][] log, TempList hottest, TempList coldest) {
         this.log = log;
@@ -22,7 +22,7 @@ public class SensorThread extends Thread {
         for (int min = 0; min < 60; min++) {
             // -100F to 70F
             int randTemp = (int) (Math.random() * 171 - 100);
-            log[ID][min] = randTemp;
+            log[ID - 1][min] = randTemp;
             hottest.offerTemp(randTemp);
             coldest.offerTemp(randTemp);
         }

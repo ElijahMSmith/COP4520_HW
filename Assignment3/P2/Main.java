@@ -23,6 +23,8 @@ public class Main {
         TempList hottest = new TempList(true);
         TempList coldest = new TempList(false);
 
+        long start = System.currentTimeMillis();
+
         ExecutorService es = Executors.newCachedThreadPool();
         for (int i = 0; i < NUM_THREADS; i++) {
             es.execute(new SensorThread(log, hottest, coldest));
@@ -31,13 +33,15 @@ public class Main {
         es.shutdown();
         boolean success = es.awaitTermination(1, TimeUnit.MINUTES);
 
+        long end = System.currentTimeMillis();
+
         if (success)
-            System.out.println("Simulation ended successfully!");
+            System.out.println("Simulation ended successfully in " + (end - start) + "ms!");
         else
             System.out.println("Simulation failed to end before 1m timeout.");
 
-        System.out.println("\n============ Full Log ============");
-        System.out.println("\tT1\tT2\tT3\tT4\tT5\tT6\tT7\tT8\n");
+        System.out.println("\n============ Full Log ============\n");
+        System.out.println("\tT1\tT2\tT3\tT4\tT5\tT6\tT7\tT8");
         for (int j = 0; j < 60; j++) {
             System.out.print("M" + j + "\t");
             for (int i = 0; i < NUM_THREADS; i++)
